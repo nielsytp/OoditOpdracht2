@@ -1,0 +1,43 @@
+﻿@model OoditOpdracht.Models.ResultObject
+@{
+    ViewBag.Title = "Oodit";
+}
+<h2>@ViewBag.Title.</h2>
+<h3>@ViewBag.Message</h3>
+
+
+
+@using (Html.BeginForm("CalculateResults", "Home", FormMethod.Post))
+{
+
+<div class="container">
+
+    <br />
+    <div class="alert alert-info">
+        Fill in a string, for example [9,3,3,2,1,1,1,2,9,9,9]
+    </div>
+   
+
+    <div class="row" style="margin-bottom:5px">
+        <div class="col-sm-12">
+            <input type="text" id="strInput" name="strInput" />           
+        </div>
+        <br />
+            <div class="col-sm-12">
+                <input type="submit" value="Analyse the inputstring" />
+            </div>
+        </div>
+        <br />
+
+
+        <div class="row" style="margin-bottom:5px">
+            <div class="col-sm-12">
+                @if (Model.outputString != null)
+                {
+                    <div>The result is:</div>
+                    <div> @Model.outputString</div>
+                }
+            </div>
+        </div>
+    </div>
+}
