@@ -29,14 +29,6 @@ namespace OoditOpdracht.Controllers
 
             ViewBag.Message = "Uitwerking Oodit opdracht";
 
-
-            //        var VM = new OrganiserViewModel();
-            //        VM.strMessage = "Exporteren niet mogelijk. U heeft (nog) geen bevoegdheid om gebruik te maken van de visitors insights database. Neem contact op met Yourticketprovider voor meer informatie.";
-            //        return View("~/Areas/Profiles/Views/Home/Index.cshtml", VM);
-
-
-            var input = resultObject.inputString;
-
             return View(resultObject);
         }
 
