@@ -36,49 +36,33 @@ namespace OoditOpdracht.Controllers
            
             strInput = strInput.Trim();
             if (strInput.StartsWith("[") && strInput.EndsWith("]"))
-            {                
-                var itemsArray = JsonConvert.DeserializeObject<string[]>(strInput);
-                
-                var dicCounter = new Dictionary<int, int>();
-                for (int i = 0; i< itemsArray.Length; i++)
-                {
-                    int value;
-                    if (int.TryParse(itemsArray[i], out value))
+            {
+                //var itemsList = JsonConvert.DeserializeObject<List<string>>(strInput); //werkt alleen met integers??
+                var itemsList = strInput.Substring(1, strInput.Length - 2).Split(',').ToList();
+
+                var numbersList = new List<Int32>();
+                foreach(string s in itemsList){
+                    if (int.TryParse(s, out int number))
                     {
-                        if (dicCounter.ContainsKey(value))
-                        {
-                            dicCounter[value]++;
-                        }
-                        else
-                        {
-                            dicCounter.Add(value, 1);
-                        }
+                        numbersList.Add(number);
                     }
                     else
                     {
-                        //one of the items is no integer. Return error
-                        resultObject.outputString = "error, inputstring not in correct format.";
+                        resultObject.outputString = "error, input contains non-numeric data.";
                         return View("~/Views/Home/Oodit.cshtml", resultObject);
                     }
                 }
 
-                //now get the strings where there are more than 3 occurrences from:
-                List<int> validNumbers = new List<int>();
-                foreach(var kvPair in dicCounter)
-                {
-                    if (kvPair.Value >= 3)
-                    {
-                        validNumbers.Add(kvPair.Key);
-                    }
-                }
+                List<int> resultList = numbersList.GroupBy(x => x)
+                                            .Select(g => new { Text = g.Key, Count = g.Count() })                                           
+                                            .Where(p=>p.Count>=3)
+                                            .OrderByDescending(q=>q.Text)
+                                            .Select(r=>r.Text).ToList();
 
-                //sort the numbers decending
-                List<int> validNumbersSorted = validNumbers.OrderByDescending(x => x).ToList();
-
-                //resultObject.outputString = JsonConvert.SerializeObject(validNumbersSorted);
-                resultObject.outputString = "[";
-                resultObject.outputString += string.Join(",", validNumbersSorted);
-                resultObject.outputString += "]";
+                //resultObject.outputString = "[";
+                //resultObject.outputString += string.Join(",", resultList);
+                //resultObject.outputString += "]";
+                resultObject.outputString = JsonConvert.SerializeObject(resultList);               
 
                 return View("~/Views/Home/Oodit.cshtml", resultObject);
             }
